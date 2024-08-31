@@ -85,7 +85,5 @@ app.delete('/students/:id', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Exporta a função handler para o Vercel
+export default (req, res) => app(req, res);
