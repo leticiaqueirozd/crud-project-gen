@@ -2,11 +2,9 @@ import express from 'express';
 import { Sequelize, DataTypes } from 'sequelize';
 import 'dotenv/config';
 
-// Inicializa o Express
 const app = express();
 app.use(express.json());
 
-// Configuração do Sequelize
 const sequelize = new Sequelize({
   username: process.env.DB_USERNAME || 'defaultUsername',
   password: process.env.DB_PASSWORD || 'defaultPassword',
@@ -15,7 +13,6 @@ const sequelize = new Sequelize({
   dialect: 'postgres',
 });
 
-// Definição do Modelo Student
 const Student = sequelize.define('Student', {
   nome: {
     type: DataTypes.STRING,
@@ -43,7 +40,6 @@ const Student = sequelize.define('Student', {
   },
 });
 
-// Rotas
 app.get('/students', async (req, res) => {
   try {
     const students = await Student.findAll();
@@ -89,5 +85,7 @@ app.delete('/students/:id', async (req, res) => {
   }
 });
 
-// Exporta a função handler para o Vercel
-export default (req, res) => app(req, res);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
