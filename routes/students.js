@@ -1,10 +1,17 @@
 import express from 'express';
-import Student from '../models/student'; 
+import Student from '../models/student.js';
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * tags:
+ *   name: Students
+ *   description: Operações alunos
+ */
+
 // Get all students
-router.get('/students', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const students = await Student.findAll();
     res.json(students);
@@ -14,7 +21,7 @@ router.get('/students', async (req, res) => {
 });
 
 // Create a new student
-router.post('/students', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const student = await Student.create(req.body);
     res.status(201).json(student);
@@ -24,7 +31,7 @@ router.post('/students', async (req, res) => {
 });
 
 // Get student by ID
-router.get('/students/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const student = await Student.findByPk(req.params.id);
     if (student) {
@@ -38,7 +45,7 @@ router.get('/students/:id', async (req, res) => {
 });
 
 // Update student by ID
-router.put('/students/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
     const [updated] = await Student.update(req.body, {
       where: { id: req.params.id },
@@ -55,7 +62,7 @@ router.put('/students/:id', async (req, res) => {
 });
 
 // Delete student by ID
-router.delete('/students/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     const deleted = await Student.destroy({
       where: { id: req.params.id },
