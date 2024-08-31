@@ -1,11 +1,9 @@
 import express from 'express';
 import { Sequelize } from 'sequelize';
 
-// Configurar o Express
 const app = express();
 app.use(express.json());
 
-// Configurar o Sequelize
 const sequelize = new Sequelize({
   username: process.env.DB_USERNAME || 'defaultUsername',
   password: process.env.DB_PASSWORD || 'defaultPassword',
@@ -14,7 +12,6 @@ const sequelize = new Sequelize({
   dialect: 'postgres',
 });
 
-// Definir o modelo Student
 const Student = sequelize.define('Student', {
   nome: {
     type: Sequelize.STRING,
@@ -42,7 +39,6 @@ const Student = sequelize.define('Student', {
   },
 });
 
-// Rotas
 app.get('/students', async (req, res) => {
   try {
     const students = await Student.findAll();
@@ -88,4 +84,5 @@ app.delete('/students/:id', async (req, res) => {
   }
 });
 
-export default app;
+// Exporta a função handler para o Vercel
+export default (req, res) => app(req, res);
