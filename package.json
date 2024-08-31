@@ -1,13 +1,14 @@
 {
-  "type": "module",
+  "name": "crud-project-gen",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module", 
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
     "express": "^4.17.1",
-    "sequelize": "^6.20.1",
-    "pg": "^8.7.1",
-    "swagger-jsdoc": "^6.1.1",
-    "swagger-ui-express": "^4.5.0"
+    "sequelize": "^6.12.0",
+    "pg": "^8.7.1" 
   }
 }

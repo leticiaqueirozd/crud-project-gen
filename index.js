@@ -1,8 +1,11 @@
 import express from 'express';
 import { Sequelize } from 'sequelize';
-import studentRoutes from './routes/students.js';
 
-// Configuração do Sequelize
+// Configurar o Express
+const app = express();
+app.use(express.json());
+
+// Configurar o Sequelize
 const sequelize = new Sequelize({
   username: process.env.DB_USERNAME || 'defaultUsername',
   password: process.env.DB_PASSWORD || 'defaultPassword',
@@ -11,54 +14,78 @@ const sequelize = new Sequelize({
   dialect: 'postgres',
 });
 
-const app = express();
-app.use(express.json());
-
-// Usar as rotas
-app.use('/students', studentRoutes);
-
-// Configuração do Swagger
-import swaggerJsdoc from 'swagger-jsdoc';
-import swaggerUi from 'swagger-ui-express';
-
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'CRUD API',
-      version: '1.0.0',
-      description: 'Documentação da API CRUD para o banco de dados de alunos',
-    },
-    servers: [
-      {
-        url: 'http://localhost:3000',
-        description: 'Servidor de Desenvolvimento',
-      },
-    ],
+// Definir o modelo Student
+const Student = sequelize.define('Student', {
+  nome: {
+    type: Sequelize.STRING,
+    allowNull: false,
   },
-  apis: ['./routes/*.js'], // Path to the API docs
-};
+  idade: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  primeira_nota: {
+    type: Sequelize.FLOAT,
+    allowNull: false,
+  },
+  segunda_nota: {
+    type: Sequelize.FLOAT,
+    allowNull: false,
+  },
+  nome_professor: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  numero_sala: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+});
 
-const specs = swaggerJsdoc(swaggerOptions);
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
-
-// Sincronizar o banco de dados e iniciar o servidor
-const startServer = async () => {
+// Rotas
+app.get('/students', async (req, res) => {
   try {
-    await sequelize.authenticate();
-    console.log('Conexão com o banco de dados estabelecida com sucesso.');
-    
-    await sequelize.sync({ force: true });
-    console.log('Database & tables created!');
-    
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-      console.log(`Servidor rodando na porta ${PORT}`);
-    });
+    const students = await Student.findAll();
+    res.json(students);
   } catch (error) {
-    console.error('Erro ao conectar com o banco de dados:', error);
+    res.status(500).json({ message: error.message });
   }
-};
+});
 
-startServer();
+app.post('/students', async (req, res) => {
+  try {
+    const student = await Student.create(req.body);
+    res.status(201).json(student);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+app.put('/students/:id', async (req, res) => {
+  try {
+    const [updated] = await Student.update(req.body, { where: { id: req.params.id } });
+    if (updated) {
+      const student = await Student.findByPk(req.params.id);
+      res.json(student);
+    } else {
+      res.status(404).json({ message: 'Aluno não encontrado' });
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+app.delete('/students/:id', async (req, res) => {
+  try {
+    const deleted = await Student.destroy({ where: { id: req.params.id } });
+    if (deleted) {
+      res.status(204).send();
+    } else {
+      res.status(404).json({ message: 'Aluno não encontrado' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+export default app;
