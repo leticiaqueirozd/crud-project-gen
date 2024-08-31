@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../index.js'; 
+import sequelize from '../index.js'; // Importar a instância do Sequelize
 
 const Student = sequelize.define('Student', {
   nome: {

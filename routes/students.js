@@ -3,13 +3,6 @@ import Student from '../models/student.js';
 
 const router = express.Router();
 
-/**
- * @swagger
- * tags:
- *   name: Students
- *   description: Operações alunos
- */
-
 // Get all students
 router.get('/', async (req, res) => {
   try {
