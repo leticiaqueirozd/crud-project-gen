@@ -1,9 +1,12 @@
 import express from 'express';
-import { Sequelize } from 'sequelize';
+import { Sequelize, DataTypes } from 'sequelize';
+import 'dotenv/config';
 
+// Inicializa o Express
 const app = express();
 app.use(express.json());
 
+// Configuração do Sequelize
 const sequelize = new Sequelize({
   username: process.env.DB_USERNAME || 'defaultUsername',
   password: process.env.DB_PASSWORD || 'defaultPassword',
@@ -12,33 +15,35 @@ const sequelize = new Sequelize({
   dialect: 'postgres',
 });
 
+// Definição do Modelo Student
 const Student = sequelize.define('Student', {
   nome: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   idade: {
-    type: Sequelize.INTEGER,
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
   primeira_nota: {
-    type: Sequelize.FLOAT,
+    type: DataTypes.FLOAT,
     allowNull: false,
   },
   segunda_nota: {
-    type: Sequelize.FLOAT,
+    type: DataTypes.FLOAT,
     allowNull: false,
   },
   nome_professor: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   numero_sala: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: false,
   },
 });
 
+// Rotas
 app.get('/students', async (req, res) => {
   try {
     const students = await Student.findAll();
